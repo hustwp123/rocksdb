@@ -95,6 +95,8 @@ class Slice {
   // Return a string that contains the copy of the referenced data.
   // when hex is true, returns a string of twice the length hex encoded (0-9A-F)
   std::string ToString(bool hex = false) const;
+  // xp
+  bool RefineKeyFormat(bool x) const;
 
 #ifdef __cpp_lib_string_view
   // Return a string_view that references the same data as this slice.

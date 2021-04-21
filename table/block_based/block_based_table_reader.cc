@@ -1481,9 +1481,12 @@ Status BlockBasedTable::PrefetchIndexAndFilterBlocks(
   if (rep_->filter_policy) {
     for (auto filter_type :
          {Rep::FilterType::kFullFilter, Rep::FilterType::kPartitionedFilter,
-          Rep::FilterType::kBlockFilter}) {
+          Rep::FilterType::kBlockFilter, Rep::FilterType::kPartitionedFilter}) {
       std::string prefix;
       switch (filter_type) {
+        case Rep::FilterType::kOtLexPdtFilter:
+          prefix = kOtLexPdtFilterBlockPrefix; //xp
+          break;
         case Rep::FilterType::kFullFilter:
           prefix = kFullFilterBlockPrefix;
           break;
@@ -1884,7 +1887,12 @@ std::unique_ptr<FilterBlockReader> BlockBasedTable::CreateFilterBlockReader(
     case Rep::FilterType::kFullFilter:
       return FullFilterBlockReader::Create(this, prefetch_buffer, use_cache,
                                            prefetch, pin, lookup_context);
-
+    case Rep::FilterType::kOtLexPdtFilter: //xp
+      //fprintf(stderr,"in Create kOtLexPdtFilter\n");
+      //fprintf(stderr, "DEBUG kzo3i kOt in CreateFilterBlockReader\n");
+      return OtLexPdtFilterBlockReader::Create(this, prefetch_buffer, use_cache,
+                                           prefetch, pin, lookup_context);
+                                           
     default:
       // filter_type is either kNoFilter (exited the function at the first if),
       // or it must be covered in this switch block
@@ -3859,7 +3867,8 @@ BlockType BlockBasedTable::GetBlockTypeForMetaBlockByName(
     const Slice& meta_block_name) {
   if (meta_block_name.starts_with(kFilterBlockPrefix) ||
       meta_block_name.starts_with(kFullFilterBlockPrefix) ||
-      meta_block_name.starts_with(kPartitionedFilterBlockPrefix)) {
+      meta_block_name.starts_with(kPartitionedFilterBlockPrefix)||
+      meta_block_name.starts_with(kOtLexPdtFilterBlockPrefix)) {
     return BlockType::kFilter;
   }
 
