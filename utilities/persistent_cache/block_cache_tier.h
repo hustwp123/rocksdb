@@ -57,9 +57,9 @@ class BlockCacheTier : public PersistentCacheTier {
     assert(!insert_th_.joinable());
   }
 
-  Status Insert(const Slice& key, const char* data, const size_t size) override;
+  Status Insert(const Slice& key, const char* data, const size_t size,bool is_meta_block=false,std::string fanme = "") override;
   Status Lookup(const Slice& key, std::unique_ptr<char[]>* data,
-                size_t* size) override;
+                size_t* size,std::string fanme = "") override;
   Status Open() override;
   Status Close() override;
   bool Erase(const Slice& key) override;

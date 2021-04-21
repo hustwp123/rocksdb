@@ -172,7 +172,7 @@ PersistentCache::StatsType BlockCacheTier::Stats() {
 }
 
 Status BlockCacheTier::Insert(const Slice& key, const char* data,
-                              const size_t size) {
+                              const size_t size, bool ,std::string) {
   // update stats
   stats_.bytes_pipelined_.Add(size);
 
@@ -264,7 +264,7 @@ Status BlockCacheTier::InsertImpl(const Slice& key, const Slice& data) {
 }
 
 Status BlockCacheTier::Lookup(const Slice& key, std::unique_ptr<char[]>* val,
-                              size_t* size) {
+                              size_t* size,std::string) {
   StopWatchNano timer(opt_.env, /*auto_start=*/ true);
 
   LBA lba;

@@ -1466,9 +1466,11 @@ Status CompactionJob::OpenCompactionOutputFile(
   assert(sub_compact->builder == nullptr);
   // no need to lock because VersionSet::next_file_number_ is atomic
   uint64_t file_number = versions_->NewFileNumber();
+  //wp
+  uint32_t path_id=sub_compact->compaction->output_level()>=2?1:sub_compact->compaction->output_path_id();
   std::string fname =
       TableFileName(sub_compact->compaction->immutable_cf_options()->cf_paths,
-                    file_number, sub_compact->compaction->output_path_id());
+                    file_number, path_id);
   // Fire events.
   ColumnFamilyData* cfd = sub_compact->compaction->column_family_data();
 #ifndef ROCKSDB_LITE
@@ -1501,7 +1503,7 @@ Status CompactionJob::OpenCompactionOutputFile(
 
   SubcompactionState::Output out;
   out.meta.fd =
-      FileDescriptor(file_number, sub_compact->compaction->output_path_id(), 0);
+      FileDescriptor(file_number, path_id, 0);
   out.finished = false;
 
   sub_compact->outputs.push_back(out);
