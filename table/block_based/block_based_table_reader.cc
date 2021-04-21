@@ -1481,6 +1481,7 @@ Status BlockBasedTable::PrefetchIndexAndFilterBlocks(
   if (rep_->filter_policy) {
     for (auto filter_type :
          {Rep::FilterType::kFullFilter, Rep::FilterType::kPartitionedFilter,
+         Rep::FilterType::kOtLexPdtFilter,
           Rep::FilterType::kBlockFilter, Rep::FilterType::kPartitionedFilter}) {
       std::string prefix;
       switch (filter_type) {
@@ -3290,6 +3291,7 @@ Status BlockBasedTable::Get(const ReadOptions& read_options, const Slice& key,
     lookup_context.get_from_user_specified_snapshot =
         read_options.snapshot != nullptr;
   }
+  
   const bool may_match =
       FullFilterKeyMayMatch(read_options, filter, key, no_io, prefix_extractor,
                             get_context, &lookup_context);

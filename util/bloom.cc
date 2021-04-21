@@ -361,8 +361,8 @@ class OtLexPdtBloomBitsReader : public FilterBitsReader {
 //      fprintf(stdout, "Rbit:%ld,%ld\n", i, ot_pdt.pub_m_bp_m_bits[i]);
 //    }
 
-//    fprintf(stderr, "DEBUG c2ys95 after RecoverFromCharArray pub_m_bp_m_size:%lu pub_m_bp_m_bits.size():%lu\n",
-//            ot_pdt.pub_m_bp_m_size, ot_pdt.pub_m_bp_m_bits.size());
+  //  fprintf(stderr, "DEBUG c2ys95 after RecoverFromCharArray pub_m_bp_m_size:%lu pub_m_bp_m_bits.size():%lu\n",
+          //  ot_pdt.pub_m_bp_m_size, ot_pdt.pub_m_bp_m_bits.size());
     // init pub_* members, and create a ot lex pdt instance from it
 //        ot_pdt.init_pubs();
 //    auto chrono_start = std::chrono::system_clock::now();
@@ -407,7 +407,7 @@ class OtLexPdtBloomBitsReader : public FilterBitsReader {
   }
 
   virtual void MayMatch(int num_keys, Slice** keys, bool* may_match) override {
-    fprintf(stdout, "DEBUG w3xm82 in OtBitsReader::MayMatch(num_keys)\n");
+    // fprintf(stdout, "DEBUG w3xm82 in OtBitsReader::MayMatch(num_keys)\n");
     for (int i = 0; i < num_keys; ++i) {
       may_match[i] = MayMatch(*keys[i]);
     }
@@ -473,7 +473,7 @@ class OtLexPdtBloomBitsReader : public FilterBitsReader {
 
     uint64_t *p3 = (uint64_t *) (buf + 4 + size1 * 2 + 4 + size2 * 2 + 4 + size3 + 4 + size4 + 4 + size5 * 8);
     num = *p3;
-    //fprintf(stderr, "DEBUG m72qa4 RecoverFromCharArray num: %lu\n", num);
+    // fprintf(stderr, "DEBUG m72qa4 RecoverFromCharArray num: %lu\n", num);
 
     //xp, be compatible with full filter
     char* pc1 = (char*) (buf + 4 + size1 * 2 + 4 + size2 * 2 + 4 + size3 + 4 + size4 + 4 + size5 * 8 + 8);

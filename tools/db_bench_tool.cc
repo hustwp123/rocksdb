@@ -3427,6 +3427,9 @@ class Benchmark {
     printf("Initializing RocksDB Options from command-line flags\n");
     Options& options = *opts;
 
+    options.db_paths={{"/home/zyh/480G/wp/db1",100l*1024*1024*1024},
+    {"/home/zyh/480G/wp/db2",200l*1024*1024*1024}};
+
     assert(db_.db == nullptr);
 
     options.max_open_files = FLAGS_open_files;
@@ -3652,7 +3655,9 @@ class Benchmark {
           rc_cfg.writer_qdepth = 4;
           rc_cfg.writer_dispatch_size = 4 * 1024;
 
-          auto pcache = std::make_shared<BlockCacheTier>(rc_cfg);
+          // auto pcache = std::make_shared<BlockCacheTier>(rc_cfg);
+          auto pcache = std::make_shared<myCache>(rc_cfg);
+
           block_based_options.persistent_cache = pcache;
           rc_status = pcache->Open();
         }

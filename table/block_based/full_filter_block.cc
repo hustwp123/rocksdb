@@ -138,6 +138,7 @@ bool OtLexPdtFilterBlockReader::KeyMayMatch(
     uint64_t block_offset, const bool no_io,
     const Slice* const /*const_ikey_ptr*/, GetContext* get_context,
     BlockCacheLookupContext* lookup_context) {
+      // fprintf(stderr,"OtLexPdtFilterBlockReader KeyMayMatch\n");
 #ifdef NDEBUG
   (void)block_offset;
 #endif
@@ -158,7 +159,7 @@ std::unique_ptr<FilterBlockReader> OtLexPdtFilterBlockReader::Create(
 
   CachableEntry<ParsedFullFilterBlock> filter_block;
   if (prefetch || !use_cache) {
-//    fprintf(stderr, "DEBUG 9d533h in OtLexPdtFiltBlockReader::Create()\n");
+  //  fprintf(stderr, "DEBUG 9d533h in OtLexPdtFiltBlockReader::Create()\n");
     const Status s = ReadFilterBlock(table, prefetch_buffer, ReadOptions(),
                                      use_cache, nullptr /* get_context */,
                                      lookup_context, &filter_block);
@@ -405,6 +406,7 @@ bool FullFilterBlockReader::KeyMayMatch(
     uint64_t block_offset, const bool no_io,
     const Slice* const /*const_ikey_ptr*/, GetContext* get_context,
     BlockCacheLookupContext* lookup_context) {
+      
 #ifdef NDEBUG
   (void)block_offset;
 #endif
