@@ -1482,7 +1482,7 @@ Status BlockBasedTable::PrefetchIndexAndFilterBlocks(
     for (auto filter_type :
          {Rep::FilterType::kFullFilter, Rep::FilterType::kPartitionedFilter,
          Rep::FilterType::kOtLexPdtFilter,
-          Rep::FilterType::kBlockFilter, Rep::FilterType::kPartitionedFilter}) {
+          Rep::FilterType::kBlockFilter}) {
       std::string prefix;
       switch (filter_type) {
         case Rep::FilterType::kOtLexPdtFilter:
