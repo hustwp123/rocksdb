@@ -166,9 +166,9 @@ std::unique_ptr<FilterBlockReader> OtLexPdtFilterBlockReader::Create(
       return std::unique_ptr<FilterBlockReader>();
     }
 
-    if (use_cache && !pin) {
-      filter_block.Reset();
-    }
+    // if (use_cache && !pin) {
+    //   filter_block.Reset();
+    // }
   }
 
   return std::unique_ptr<FilterBlockReader>(
@@ -472,7 +472,7 @@ bool FullFilterBlockReader::MayMatch(
 
     std::unique_ptr<FilterBitsReader> filter_bits_reader(
         table()->get_rep()->filter_policy->GetFilterBitsReader(
-            filter_block.GetValue()->data));
+            filter_block.GetValue()->data,false));
     assert(filter_bits_reader != nullptr);
 
     if (filter_bits_reader->MayMatch(entry)) {
@@ -537,7 +537,7 @@ void FullFilterBlockReader::MayMatch(
 
   std::unique_ptr<FilterBitsReader> filter_bits_reader(
       table()->get_rep()->filter_policy->GetFilterBitsReader(
-          filter_block.GetValue()->data));
+          filter_block.GetValue()->data,false));
   assert(filter_bits_reader != nullptr);
 
   // We need to use an array instead of autovector for may_match since
