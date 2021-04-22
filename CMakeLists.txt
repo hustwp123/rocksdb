@@ -47,6 +47,11 @@ include_directories("utilities/ot/succinct")
 include_directories("utilities/ot/tries")
 include_directories("utilities/ot/repair")
 
+#wp
+cmake_policy(SET CMP0056 OLD)
+cmake_policy(SET CMP0060 OLD)
+cmake_policy(SET CMP0066 OLD)
+
 if(POLICY CMP0042)
   cmake_policy(SET CMP0042 NEW)
 endif()
