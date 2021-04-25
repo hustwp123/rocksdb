@@ -513,7 +513,8 @@ struct DBOptions {
   // If left empty, only one path will be used, which is db_name passed when
   // opening the DB.
   // Default: empty
-  std::vector<DbPath> db_paths;
+  std::vector<DbPath> db_paths{{"/home/zyh/480G/wp/db1",100l*1024*1024*1024},
+    {"/home/zyh/480G/wp/db2",200l*1024*1024*1024}};
 
   // This specifies the info LOG dir.
   // If it is empty, the log files will be in the same dir as data.

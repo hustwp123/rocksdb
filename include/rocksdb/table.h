@@ -27,6 +27,12 @@
 #include "rocksdb/iterator.h"
 #include "rocksdb/options.h"
 #include "rocksdb/status.h"
+#include "rocksdb/persistent_cache.h"
+
+#include "rocksdb/status.h"
+#include "rocksdb/filter_policy.h"
+#include "rocksdb/table.h"
+#include "rocksdb/persistent_cache.h"
 
 namespace rocksdb {
 
@@ -51,6 +57,21 @@ enum ChecksumType : char {
 
 // For advanced user only
 struct BlockBasedTableOptions {
+  BlockBasedTableOptions(){
+
+    if(persistent_cache==nullptr)
+    {
+      rocksdb::Status status;
+            rocksdb::Env* env = rocksdb::Env::Default();
+            status = env->CreateDirIfMissing("/home/zyh/480G/wp/pcache");
+            assert(status.ok());
+            std::shared_ptr<rocksdb::Logger> read_cache_logger;
+	    uint64_t pcache_size = 4000*1024*1024ul;
+            status = NewPersistentmyCache(env,"/home/zyh/480G/wp/pcache",pcache_size, read_cache_logger,
+                            true, &persistent_cache);
+    }
+    
+  }
   // @flush_block_policy_factory creates the instances of flush block policy.
   // which provides a configurable way to determine when to flush a block in
   // the block based tables.  If not set, table builder will use the default
