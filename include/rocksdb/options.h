@@ -513,8 +513,8 @@ struct DBOptions {
   // If left empty, only one path will be used, which is db_name passed when
   // opening the DB.
   // Default: empty
-  std::vector<DbPath> db_paths{{"/tmp/rocksdb/db1",100l*1024*1024*1024},
-    {"/tmp/rocksdb/db2",200l*1024*1024*1024}};
+  std::vector<DbPath> db_paths{{"/var/lib/tikv/db1",100l*1024*1024*1024},
+    {"/var/lib/tikv/db2",200l*1024*1024*1024}};
 
   // This specifies the info LOG dir.
   // If it is empty, the log files will be in the same dir as data.

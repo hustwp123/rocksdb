@@ -63,11 +63,11 @@ struct BlockBasedTableOptions {
     {
       rocksdb::Status status;
             rocksdb::Env* env = rocksdb::Env::Default();
-            status = env->CreateDirIfMissing("/home/zyh/480G/wp/pcache");
+            status = env->CreateDirIfMissing("/var/lib/tikv/pcache");
             assert(status.ok());
             std::shared_ptr<rocksdb::Logger> read_cache_logger;
 	    uint64_t pcache_size = 4000*1024*1024ul;
-            status = NewPersistentmyCache(env,"/home/zyh/480G/wp/pcache",pcache_size, read_cache_logger,
+            status = NewPersistentmyCache(env,"/var/lib/tikv/pcache",pcache_size, read_cache_logger,
                             true, &persistent_cache);
     }
     
