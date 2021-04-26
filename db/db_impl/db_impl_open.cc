@@ -1271,7 +1271,7 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
                     const bool seq_per_batch, const bool batch_per_txn) {
 	std::string tmp=dbname+"/wptmplog73j8";
 	FILE* fp=fopen(tmp.c_str(),"w");
-	fprintf(fp,"dbname:%s\npaths:\n"dbname.c_str());
+	fprintf(fp,"dbname:%s\npaths:\n",dbname.c_str());
 	for(uint64_t i=0;i<db_options.db_paths.size();i++)
 	{
 	    fprintf(fp,"%s\n",db_options.db_paths[i].path.c_str());
