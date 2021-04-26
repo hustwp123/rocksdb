@@ -1269,12 +1269,24 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
                     const std::vector<ColumnFamilyDescriptor>& column_families,
                     std::vector<ColumnFamilyHandle*>* handles, DB** dbptr,
                     const bool seq_per_batch, const bool batch_per_txn) {
-  Status s = SanitizeOptionsByTable(db_options, column_families);
+  DBOptions options_set_paths(db_options);
+  fprintf(stderr,"dbname:%s\n",dbname.c_str());
+  if(options_set_paths.db_paths.empty())
+  {
+    fprintf(stderr,"paths is empty\n");
+    // string path1=dbname+"/db1";
+    // string path2=dbname+"/db2";
+    options_set_paths.db_paths={{dbname+"/wppath1",100l*1024*1024*1024},
+    {dbname+"/wppath2",200l*1024*1024*1024}};
+    // options_set_paths.db_paths.push_back({path1,100l*1024*1024*1024});
+    // options_set_paths.db_paths.push_back({path2,100l*1024*1024*1024});
+  }
+  Status s = SanitizeOptionsByTable(options_set_paths, column_families);
   if (!s.ok()) {
     return s;
   }
 
-  s = ValidateOptions(db_options, column_families);
+  s = ValidateOptions(options_set_paths, column_families);
   if (!s.ok()) {
     return s;
   }
@@ -1288,7 +1300,7 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
         std::max(max_write_buffer_size, cf.options.write_buffer_size);
   }
 
-  DBImpl* impl = new DBImpl(db_options, dbname, seq_per_batch, batch_per_txn);
+  DBImpl* impl = new DBImpl(options_set_paths, dbname, seq_per_batch, batch_per_txn);
   s = impl->env_->CreateDirIfMissing(impl->immutable_db_options_.wal_dir);
   if (s.ok()) {
     std::vector<std::string> paths;
@@ -1355,7 +1367,7 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
               new ColumnFamilyHandleImpl(cfd, impl, &impl->mutex_));
           impl->NewThreadStatusCfInfo(cfd);
         } else {
-          if (db_options.create_missing_column_families) {
+          if (options_set_paths.create_missing_column_families) {
             // missing column family, create it
             ColumnFamilyHandle* handle;
             impl->mutex_.Unlock();

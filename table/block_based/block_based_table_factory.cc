@@ -7,9 +7,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
-#include <cinttypes>
+#include "table/block_based/block_based_table_factory.h"
+
 #include <stdint.h>
 
+#include <cinttypes>
 #include <memory>
 #include <string>
 
@@ -18,8 +20,8 @@
 #include "rocksdb/cache.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/flush_block_policy.h"
+#include "rocksdb/persistent_cache.h"
 #include "table/block_based/block_based_table_builder.h"
-#include "table/block_based/block_based_table_factory.h"
 #include "table/block_based/block_based_table_reader.h"
 #include "table/format.h"
 #include "util/mutexlock.h"
@@ -217,8 +219,7 @@ TableBuilder* BlockBasedTableFactory::NewTableBuilder(
       file, table_builder_options.compression_type,
       table_builder_options.sample_for_compression,
       table_builder_options.compression_opts,
-      table_builder_options.skip_filters,
-       table_builder_options.level,
+      table_builder_options.skip_filters, table_builder_options.level,
       table_builder_options.column_family_name,
       table_builder_options.creation_time,
       table_builder_options.oldest_key_time,
@@ -280,6 +281,21 @@ Status BlockBasedTableFactory::SanitizeOptions(
         "max_successive_merges larger than 0 is currently inconsistent with "
         "unordered_write");
   }
+  if (table_options.persistent_cache == nullptr) {
+    std::string path = db_opts.db_paths[0].path;
+    path += "pcache";
+    Status status;
+    Env* env = rocksdb::Env::Default();
+    status = env->CreateDirIfMissing(path);
+    assert(status.ok());
+    std::shared_ptr<rocksdb::Logger> read_cache_logger;
+    uint64_t pcache_size = 400 * 1024 * 1024ul;
+    status =
+        rocksdb::NewPersistentmyCache(env, path, pcache_size, read_cache_logger,
+                                      true, &table_options_.persistent_cache);
+    assert(status.ok());
+  }
+
   return Status::OK();
 }
 
