@@ -178,7 +178,7 @@ class PlainTableFactory : public TableFactory {
   // Sanitizes the specified DB Options.
   Status SanitizeOptions(
       const DBOptions& /*db_opts*/,
-      const ColumnFamilyOptions& /*cf_opts*/) const override {
+      const ColumnFamilyOptions& /*cf_opts*/)  override {
     return Status::OK();
   }
 

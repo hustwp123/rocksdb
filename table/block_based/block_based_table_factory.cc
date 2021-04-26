@@ -230,7 +230,7 @@ TableBuilder* BlockBasedTableFactory::NewTableBuilder(
 }
 
 Status BlockBasedTableFactory::SanitizeOptions(
-    const DBOptions& db_opts, const ColumnFamilyOptions& cf_opts) const {
+    const DBOptions& db_opts, const ColumnFamilyOptions& cf_opts)  {
   if (table_options_.index_type == BlockBasedTableOptions::kHashSearch &&
       cf_opts.prefix_extractor == nullptr) {
     return Status::InvalidArgument(
@@ -281,7 +281,7 @@ Status BlockBasedTableFactory::SanitizeOptions(
         "max_successive_merges larger than 0 is currently inconsistent with "
         "unordered_write");
   }
-  if (table_options.persistent_cache == nullptr) {
+  if (table_options_.persistent_cache == nullptr) {
     std::string path = db_opts.db_paths[0].path;
     path += "pcache";
     Status status;

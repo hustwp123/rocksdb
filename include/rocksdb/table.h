@@ -555,7 +555,7 @@ class TableFactory {
   // If the function cannot find a way to sanitize the input DB Options,
   // a non-ok Status will be returned.
   virtual Status SanitizeOptions(const DBOptions& db_opts,
-                                 const ColumnFamilyOptions& cf_opts) const = 0;
+                                 const ColumnFamilyOptions& cf_opts) = 0;
 
   // Return a string that contains printable format of table configurations.
   // RocksDB prints configurations at DB Open().
