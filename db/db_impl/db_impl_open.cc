@@ -1275,9 +1275,20 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
   {
     fprintf(stderr,"paths is empty\n");
     // string path1=dbname+"/db1";
-    // string path2=dbname+"/db2";
+    std::string path2=dbname+"/wppath2";
+    std::string::size_type idx;
+    idx=dbname.find("tikv/raft");
+    if(idx!=std::string::npos)
+    {
+      path2="/var/l2/raftwppath2";
+    }
+    idx=dbname.find("tikv/db");
+    if(idx!=std::string::npos)
+    {
+      path2="/var/l2/dbwppath2";
+    }
     options_set_paths.db_paths={{dbname+"/wppath1",100l*1024*1024*1024},
-    {dbname+"/wppath2",200l*1024*1024*1024}};
+    {path2,200l*1024*1024*1024}};
     // options_set_paths.db_paths.push_back({path1,100l*1024*1024*1024});
     // options_set_paths.db_paths.push_back({path2,100l*1024*1024*1024});
   }
