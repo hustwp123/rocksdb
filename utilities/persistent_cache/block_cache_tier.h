@@ -182,7 +182,13 @@ struct DLinkedNode  //双向链表节点
 class SST_space  // cache 管理单个SST所占空间
 {
  public:
-  SST_space(){};
+  SST_space(){
+    int ret = posix_memalign((void **)&buf_, 4096, 4096);
+    if(ret){
+	    fprintf(stderr,"posix_memalign failed");
+	    exit(1);
+    }
+  };
   void Set_Par(int fd_, uint32_t num, uint64_t begin_) {
     fd = fd_;
     begin = begin_;
@@ -204,6 +210,11 @@ class SST_space  // cache 管理单个SST所占空间
     tail = new DLinkedNode();
     head->next = tail;
     tail->prev = head;
+  }
+  ~SST_space(){
+	if(buf_ != nullptr){
+	  free(buf_);
+	}
   }
 
   Status Get(const std::string key, std::unique_ptr<char[]>* data,
@@ -263,6 +274,8 @@ class SST_space  // cache 管理单个SST所占空间
 
   std::vector<uint64_t> empty_nodes;
   uint32_t last=0;
+
+  char* buf_=nullptr;
 };
 
 class myCache : public PersistentCacheTier {

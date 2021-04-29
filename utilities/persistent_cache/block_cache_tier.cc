@@ -478,21 +478,28 @@ Status SST_space::Get(const std::string key, std::unique_ptr<char[]>* data,
   size_t cur = 0;
   for (uint32_t i = 0; i < (node->value.offset.size() - 1); i++) {
     ssize_t t =
-        pread(fd, data->get() + cur, SPACE_SIZE, begin + node->value.offset[i]);
-    if (t != SPACE_SIZE) {
+        pread(fd, buf_, SPACE_SIZE, begin + node->value.offset[i]);
+
+    memcpy(data->get() + cur,buf_,SPACE_SIZE);
+    if (t < 0) {
       return Status::IOError();
     }
+    if(t != SPACE_SIZE)
+	   fprintf(stderr,"t != SPACE_SIZE. t is %ld \n",t);
+
     cur += SPACE_SIZE;
   }
-  ssize_t left_size = node->value.size % SPACE_SIZE == 0
+  int left_size = node->value.size % SPACE_SIZE == 0
                       ? SPACE_SIZE
                       : node->value.size % SPACE_SIZE;
   int index = node->value.offset.size() - 1;
-  ssize_t t = pread(fd, data->get() + cur, left_size,
+  ssize_t t = pread(fd, buf_,SPACE_SIZE,
                     begin + node->value.offset[index]);
-  if (t != left_size) {
+  memcpy(data->get() + cur,buf_,left_size);
+  if (t < 0) {
     return Status::IOError();
   }
+
   return Status::OK();
 }
 
@@ -608,22 +615,25 @@ void SST_space::Put(const std::string& key, const std::string& value,
   //写块
   size_t cur = 0;
   for (uint32_t i = 0; i < node->value.offset.size() - 1; i++) {
-    ssize_t t = pwrite(fd, value.c_str() + cur, SPACE_SIZE,
+    memcpy(buf_,value.c_str() + cur,4096);
+    ssize_t t = pwrite(fd, buf_, SPACE_SIZE,
                        begin + node->value.offset[i]);
-    if (t != SPACE_SIZE) {
-      fprintf(stderr,"pwrite error\n");
+    if( t != SPACE_SIZE){
+	    printf("t != SPACE_SIZE in pwrite, t is %ld ;\n",t);
+    }
+    if (t < 0) {
       return;
     }
     cur += SPACE_SIZE;
   }
   
-  ssize_t left_size =
+  size_t left_size =
       value.size() % SPACE_SIZE == 0 ? SPACE_SIZE : value.size() % SPACE_SIZE;
   int index = node->value.offset.size() - 1;
-  ssize_t t = pwrite(fd, value.c_str() + cur, left_size,
+  memcpy(buf_,value.c_str() + cur,left_size);
+  ssize_t t = pwrite(fd, buf_, SPACE_SIZE,
                      begin + node->value.offset[index]);
-  if (t != left_size) {
-    fprintf(stderr,"pwrite error\n");
+  if (t < 0) {
     return;
   }
 }
